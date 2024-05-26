@@ -2,4 +2,4 @@
 
 ![logo](logo.webp)
 
-Converting ASL into text using AI
+Converting ASL into text using machine learning
