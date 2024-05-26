@@ -245,3 +245,4 @@ log.txt
 *.csv
 source/dataset/csv_dataset/landmarks/
 source/dataset/images/
+source/dataset/
