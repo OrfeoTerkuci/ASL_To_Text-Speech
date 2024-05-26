@@ -1,0 +1,71 @@
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts%
+% The preceding line is only needed to identify funding in the first footnote. If that is unneeded, please comment it out.
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{subfiles}
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+
+\graphicspath{ {./images/} }    
+\begin{document}
+
+    \title{ASL to text\\}
+
+    \author{\IEEEauthorblockN{1\textsuperscript{st} Orfeo Tërkuçi}
+    \IEEEauthorblockA{\textit{Faculty of Science} \\
+    \textit{University of Antwerp}\\
+    Antwerp, Belgium \\
+    orfeo.terkuci@student.uantwerpen.be}
+    \and
+    \IEEEauthorblockN{2\textsuperscript{nd} Jason Liu}
+    \IEEEauthorblockA{\textit{Faculty of Science} \\
+    \textit{University of Antwerp}\\
+    Antwerp, Belgium \\
+    jason.liu@student.uantwerpen.be}
+    \and
+    \IEEEauthorblockN{3\textsuperscript{rd} Anass Hamzaoui}
+    \IEEEauthorblockA{\textit{Faculty of Science} \\
+    \textit{University of Antwerp}\\
+    Antwerp, Belgium \\
+    anass.hamzaoui@student.uantwerpen.be}
+    }
+
+    \maketitle
+
+    \begin{abstract}
+        In this paper we discuss about our process of creating a model that can translate American Sign Language (ASL) to text.
+        We will discuss the data we used, the model we created and the results we obtained.
+        We will also discuss the challenges we faced and the future work that can be done to improve our model.
+    \end{abstract}
+
+
+    \section{Introduction}\label{sec:introduction}
+    \subfile{sections/Introduction.tex}
+
+    \section{Dataset}\label{sec:dataset}
+    \subfile{sections/Dataset.tex}
+
+    \section{Modelling}\label{sec:modelling}
+    \subfile{sections/Modelling.tex}
+
+    \section{Hand tracking}\label{sec:hand_tracking}
+    \subfile{sections/Hand_tracking.tex}
+
+    \section{Results}\label{sec:results}
+    \subfile{sections/Results.tex}
+
+    \section{Issues}\label{sec:issues}
+    \subfile{sections/Issues.tex}
+
+    \section{Conclusion}\label{sec:conclusion}
+    \subfile{sections/Conclusion.tex}
+
+    \subfile{sections/References.tex}
+
+\end{document}

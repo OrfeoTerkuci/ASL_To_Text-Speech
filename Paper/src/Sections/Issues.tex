@@ -1,0 +1,49 @@
+\documentclass[../paper.tex]{subfiles}
+
+% Document
+\begin{document}
+There were several issues we encountered during the project. 
+We will discuss the most important ones in this section.
+\subsection{Data}
+The first issue we encountered was the data we used to train our model.
+The issue we faced was that data found online is not always trustworthy.
+One of the dataset we used before MNIST, was one that we found on kagle, stating that it was a dataset of the American Sign Language alphabet.
+After looking further into the dataset, we quickly found out that the dataset did not only consist of the American Sign Language alphabet, but also of other alphabets.
+This was a big issue, as the model would not be able to distinguish between the different alphabets.\\
+\\
+Another issue is that the dataset were always mapped to the full alphabet, including the letters J and Z.
+This creates extra number of classes that our model needs to account of, leading to less accuaracy.
+We fixed this by remapping the classes to the alphabet excluding J and Z.
+\subsection{Model}
+Making a good model is not easy, and we encountered several issues when creating the model.
+One issue we encountered was that the model was overfitting. 
+The model would quicly overfit causing our model to only remember certain letters, for instance only A for all hand signs.
+Fixing this issue was not easy, as we had to try different things to prevent overfitting.\\
+\\
+Next issue, deciding the layers and how many layers our model should have is a difficult task.
+You have to account for the complexity of the model, the number of classes, the size of the dataset, etc.
+Our model was originally overcomplex and would train longer than needed. 
+At one point it was not complex enough and would not be able to distinguish between the different letters.
+Complexity can also decrease the training time, if the layers are chosen correctly.
+SO, overall choosing the right layers and the right number of layers is a difficult task.
+\\\\
+TODO
+\subsection{Training}
+Training the model was also a difficult task.
+As mentioned before, there are a few hyperparameters that we used when training the model: the learning rate, the batch size, the number of epochs, min delta, and patience.
+Finding the right values for these hyperparameters was a fiddly task that required a lot of trial and error. If the learning rate was too low, the model would not learn anything
+and would essentially flatline right at the start. If the learning rate was too high, the model would learn too quickly and the predictions would be all over the place.
+When tested, it would sometimes predict the same letter, no matter what the input was. Other times, it would predict a different letter every time.
+The same problems occured with the batch size. If it was too low, the model would not have enough data to learn in each epoch and it would end up the same as if the learning rate was too low.
+
+We started with a learning rate of $1e^{-3}$, but that was extremely high, so then we reduced it, tested different values and ended up training our model mostly with a learning rate in the range of $ 1e^{-6} - 1e^{-8}$.
+For the batch size, we started with a batch size of 32, but most of the time we decreased it to 16, as it gave us better results.
+
+The number of epochs was initially 20! but it quickly became apparent that this was not enough. Most of the time we ended up training the model with a maximum of 1000 epochs and even later on with 10000 epochs.
+Min delta and patiente we did not change around much. The min delta was set to 0.0001 for most of the training and the patience was set to 2 (in the end it was raised to 4).
+
+As mentioned previously, the dataset that we used was not big. This caused the model to overfit quickly.
+We tried to fix this by training the model in a reduced dataset of the first 6 letters of the alphabet, but this did not help much. It gave better results than the full 24-letter dataset, but it was still 
+not detecting the letters correctly in "real life" situations.
+
+\end{document}
