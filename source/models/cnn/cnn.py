@@ -29,10 +29,10 @@ from image_rendering.image_recognition import MpSettings
 from models import basemodel as bm
 
 # Hyperparameters
-BATCH_SIZE = 8
+BATCH_SIZE = 16
 LEARNING_RATE = 1e-08   
 EPOCHS = 100000
-MIN_DELTA = 0.004
+MIN_DELTA = 0.04
 PATIENCE = 4
 
 # Other constants
@@ -226,7 +226,7 @@ class StepData:
 
 
 class CNN(bm.BaseModel):
-    def __init__(self, train_file: str, test_file: str, val_file: str):
+    def __init__(self, train_file: str, test_file: str, val_file: str, train: bool = True):
         """
         Initializes the CNN class.
 
@@ -235,7 +235,7 @@ class CNN(bm.BaseModel):
             test_file (str): The path to the test file.
             val_file (str): The path to the validation file.
         """
-        super().__init__(train_file, test_file, val_file)
+        super().__init__(train_file, test_file, val_file, train=train)
 
         # Define the layers of your CNN here
         self.conv1 = nn.Conv2d(IN_CHANNELS, 32, kernel_size=(3, 3), stride=1, padding=1)
