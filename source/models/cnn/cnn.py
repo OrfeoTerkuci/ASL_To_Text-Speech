@@ -558,7 +558,10 @@ class CNN(bm.BaseModel):
         Returns:
             CNN: The loaded CNN model.
         """
-        self.load_state_dict(torch.load(path))
+        if torch.cuda.is_available():
+            self.load_state_dict(torch.load(path), strict=False)
+        else:
+            self.load_state_dict(torch.load(path, map_location=torch.device('cpu')), strict=False)
         self.eval()
 
     def __str__(self) -> str:
@@ -592,7 +595,7 @@ class CNN(bm.BaseModel):
 class CnnLandMarks(bm.BaseModel):
     """Cnn model for landmarks detection."""
 
-    def __init__(self, train_file: str, test_file: str, val_file: str):
+    def __init__(self, train_file: str, test_file: str, val_file: str, train: bool = True):
         """
         Initializes the CNN class.
 
@@ -601,7 +604,7 @@ class CnnLandMarks(bm.BaseModel):
             test_file (str): The path to the test file.
             val_file (str): The path to the validation file.
         """
-        super().__init__(train_file, test_file, val_file, landmarks=True)
+        super().__init__(train_file, test_file, val_file, landmarks=True, train=train)
 
         self.conv1 = nn.Conv2d(IN_CHANNELS, 32, kernel_size=(3, 3), stride=1, padding=1)
         self.act1 = nn.ReLU()
