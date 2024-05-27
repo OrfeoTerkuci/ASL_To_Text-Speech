@@ -48,6 +48,10 @@ def log_error(error: str) -> None:
     Log the error.
     :param error: The error
     """
+    # If the log file does not exist, create it
+    if not os.path.exists(LOG_FILE):
+        log_file()
+    
     with open(LOG_FILE, "a", encoding="utf-8") as f:
         f.write(f"{error}\n")
 
@@ -599,14 +603,14 @@ def normalize_dataset(save_sample: bool = False):
 
     # separate the label column
     labels = data[:, 0]
-
+    total = len(np.unique(labels))
     print(f"Min label: {min(labels)}")
     print(f"Max label: {max(labels)}")
 
     data = data[:, 1:]
     print(labels)
     # Get a list of indices from the labels, one for each letter
-    indices = [np.where(labels == i)[0][0] for i in range(24)]
+    indices = [np.where(labels == i)[0][0] for i in range(total)]
 
     print(f"Indices chosen: {indices}")
 
@@ -717,7 +721,7 @@ def normalize_dataset(save_sample: bool = False):
         train_df.shape[0] : train_df.shape[0] + validation_df.shape[0]
     ]
     test_data = final_data[
-        train_df.shape[0] : train_df.shape[0] + validation_df.shape[0] :
+        train_df.shape[0] + validation_df.shape[0] :
     ]
 
     # Convert the numpy array back to a DataFrame
@@ -753,6 +757,11 @@ def normalize_dataset(save_sample: bool = False):
     final_val_df.to_csv(new_file, index=False)
 
     print("Saved normalized dataset to", new_file)
+    
+    # Print the size of the dataset
+    print("Training data:", len(final_train_df))
+    print("Validation data:", len(final_val_df))
+    print("Testing data:", len(final_test_df))
 
 
 def add_landmarks_header_to_csv(
@@ -959,8 +968,8 @@ def chart_distribution():
     plt.savefig("landmarks_distribution.png")
 
 
-def augment_dataset():
-    for subdir, _, files in os.walk(IMAGES_DIR):
+def augment_dataset(dataset: str = IMAGES_DIR):
+    for subdir, _, files in os.walk(dataset):
         print(f"Processing {subdir}")
         count = len(files) - 1
         letter = subdir.split("\\")[-1][0]
