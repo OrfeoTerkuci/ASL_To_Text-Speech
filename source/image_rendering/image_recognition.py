@@ -20,6 +20,7 @@ from PIL import Image
 from utils import (
     adjust_min_max,
     coords_calc,
+    detect_key,
     exit_on_close,
     exit_on_key,
     letter_predictions,
@@ -87,17 +88,50 @@ class DataCapture:
             while True:
                 frame = self.get_frame()
                 frame = cv2.flip(frame, 1)
+                # Show the current letter
+                cv2.putText(
+                    frame,
+                    f"Recording {letter.upper()}",
+                    (10, 50),
+                    cv2.FONT_HERSHEY_SIMPLEX,
+                    1,
+                    (0, 0, 255),
+                )
+                # Show instructions
+                cv2.putText(
+                    frame,
+                    "'s' to save image",
+                    (10, 100),
+                    cv2.FONT_HERSHEY_SIMPLEX,
+                    1,
+                    (0, 255, 0),
+                )
+                cv2.putText(
+                    frame,
+                    "'n' to move to the next letter",
+                    (10, 150),
+                    cv2.FONT_HERSHEY_SIMPLEX,
+                    1,
+                    (0, 255, 0),
+                )
+
                 cv2.imshow("frame", frame)
-                if cv2.waitKey(1) & 0xFF == ord("s"):
-                    dir_size = len(os.listdir(f"dataset/{letter}_dir"))
+                if cv2.waitKey(10) & 0xFF == ord("s"):
+                    # If the directory does not exist, create it
+                    if not os.path.exists(f"dataset/new/{letter}_dir"):
+                        os.makedirs(f"dataset/new/{letter}_dir")
+                    dir_size = len(os.listdir(f"dataset/new/{letter}_dir"))
                     # Read the frame again, because old frame might be outdated
                     frame = self.get_frame()
                     frame = cv2.flip(frame, 1)
-                    print(f"Saving dataset/{letter}_dir/{letter}{dir_size}.png")
-                    cv2.imwrite(f"dataset/{letter}_dir/{letter}{dir_size}.png", frame)
+                    print(f"Saving dataset/new/{letter}_dir/{letter}{dir_size}.png")
+
+                    cv2.imwrite(
+                        f"dataset/new/{letter}_dir/{letter}{dir_size}.png", frame
+                    )
                     cv2.imshow("frame", frame)
 
-                if cv2.waitKey(1) & 0xFF == ord("n"):
+                if cv2.waitKey(10) & 0xFF == ord("n"):
                     break
 
                 if exit_on_key() or exit_on_close():
