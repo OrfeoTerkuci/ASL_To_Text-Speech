@@ -29,10 +29,10 @@ from image_rendering.image_recognition import MpSettings
 from models import basemodel as bm
 
 # Hyperparameters
-BATCH_SIZE = 16
-LEARNING_RATE = 1e-08   
+BATCH_SIZE = 8
+LEARNING_RATE = 5e-09   
 EPOCHS = 100000
-MIN_DELTA = 0.04
+MIN_DELTA = 0.004
 PATIENCE = 4
 
 # Other constants
@@ -241,7 +241,7 @@ class CNN(bm.BaseModel):
         self.conv1 = nn.Conv2d(IN_CHANNELS, 32, kernel_size=(3, 3), stride=1, padding=1)
         self.act1 = nn.ReLU()
         self.bn1 = nn.BatchNorm2d(32)
-        self.dropout1 = nn.Dropout(0.3)
+        
         self.pool1 = nn.MaxPool2d(kernel_size=(2, 2), stride=2)  # 14x14
 
         self.conv2 = nn.Conv2d(32, 64, kernel_size=(3, 3), stride=1, padding=1)
@@ -259,7 +259,7 @@ class CNN(bm.BaseModel):
         self.bn4 = nn.BatchNorm2d(256)
         self.pool4 = nn.MaxPool2d(kernel_size=(2, 2), stride=2)  # 1x1
 
-
+        self.dropout = nn.Dropout(0.15)
         self.flatten = nn.Flatten()
 
         # self.fc4 = nn.Linear(128 * 3 * 3, out_features=512)
@@ -296,22 +296,25 @@ class CNN(bm.BaseModel):
         x = self.conv1(x)
         x = self.act1(x)
         x = self.bn1(x)
-        # x = self.dropout1(x)
+        x = self.dropout(x)
         x = self.pool1(x)
 
         x = self.conv2(x)
         x = self.act2(x)
         x = self.bn2(x)
+        x = self.dropout(x)
         x = self.pool2(x)
 
         x = self.conv3(x)
         x = self.act3(x)
         x = self.bn3(x)
+        x = self.dropout(x)
         x = self.pool3(x)
 
         x = self.conv4(x)
         x = self.act4(x)
         x = self.bn4(x)
+        x = self.dropout(x)
         x = self.pool4(x)
 
         x = self.flatten(x)
@@ -326,12 +329,14 @@ class CNN(bm.BaseModel):
         # x = self.act5(x)
 
         x = self.fc6(x)
-        x = self.bn6(x)
         x = self.act6(x)
-
+        x = self.bn6(x)
+        x = self.dropout(x)
+        
+        
         x = self.fc7(x)
-        x = self.bn7(x)
         x = self.act7(x)
+        x = self.bn7(x)
 
         x = self.fc8(x)
 

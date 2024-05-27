@@ -590,12 +590,21 @@ def reduce_landmarks_dataset(new_size: int):
     )
 
 
-def normalize_dataset(save_sample: bool = False):
-
+def normalize_dataset(save_sample: bool = False, reduced: bool = False):
+    print(f"Processing{' reduced ' if reduced else ' '}dataset")
+    
+    nrows = 4 if not reduced else 3
+    ncols = 6 if not reduced else 2
+    
     # Concatenate the training and testing datasets
-    train_df = pd.read_csv(CSV_DATASET_TRAINING)
-    test_df = pd.read_csv(CSV_DATASET_TESTING)
-    validation_df = pd.read_csv(CSV_DATASET_VALIDATION)
+    if reduced:
+        train_df = pd.read_csv(f"{DATASET_TRAINING}/train_6.csv")
+        test_df = pd.read_csv(f"{DATASET_TESTING}/test_6.csv")
+        validation_df = pd.read_csv(f"{DATASET_VALIDATION}/validation_6.csv")
+    else:
+        train_df = pd.read_csv(CSV_DATASET_TRAINING)
+        test_df = pd.read_csv(CSV_DATASET_TESTING)
+        validation_df = pd.read_csv(CSV_DATASET_VALIDATION)
 
     df = pd.concat([train_df, validation_df, test_df])
 
@@ -619,13 +628,13 @@ def normalize_dataset(save_sample: bool = False):
     print("Calculate mean image")
 
     # Choose a random image to display
-    grid_size = 5
+    # grid_size = 5
     if save_sample:
         mean_image_reshaped = mean_image.reshape(28, 28)
         plt.imshow(mean_image_reshaped, cmap="gray")
         plt.title("Mean Image")
         plt.axis("off")
-        plt.savefig("mean_image.png")
+        plt.savefig(f"mean_image{'_6' if reduced else ''}.png")
 
         plt.figure(figsize=(10, 10))
 
@@ -635,13 +644,13 @@ def normalize_dataset(save_sample: bool = False):
             image_reshaped = image.reshape(28, 28)
 
             # Create a subplot for each image
-            plt.subplot(grid_size, grid_size, idx + 1)
+            plt.subplot(nrows, ncols, idx + 1)
             plt.imshow(image_reshaped, cmap="gray")
             plt.title(f"Letter {number_to_letter[labels[i]]}")
             plt.axis("off")  # Hide axis
         plt.suptitle("Original images")
         # Save the entire grid to a single file
-        plt.savefig("letters_grid.png")
+        plt.savefig(f"letters_grid{'_6' if reduced else ''}.png")
 
     # Normalize the images by subtracting the mean image
     centered_data = data - mean_image
@@ -655,14 +664,14 @@ def normalize_dataset(save_sample: bool = False):
             image_reshaped = image.reshape(28, 28)
 
             # Create a subplot for each image
-            plt.subplot(grid_size, grid_size, idx + 1)
+            plt.subplot(nrows, ncols, idx + 1)
             plt.imshow(image_reshaped, cmap="gray")
             plt.title(f"Letter {number_to_letter[labels[i]]}")
             plt.axis("off")  # Hide axis
         plt.suptitle("Centered images")
 
         # Save the entire grid to a single file
-        plt.savefig("letters_grid_centered.png")
+        plt.savefig(f"letters_grid_centered{'_6' if reduced else ''}.png")
 
     # Rescale the dataset to have values between 0 and 1
     normalized_data = centered_data / 255.0
@@ -677,13 +686,13 @@ def normalize_dataset(save_sample: bool = False):
             image_reshaped = image.reshape(28, 28)
 
             # Create a subplot for each image
-            plt.subplot(grid_size, grid_size, idx + 1)
+            plt.subplot(nrows, ncols, idx + 1)
             plt.imshow(image_reshaped, cmap="gray")
             plt.title(f"Letter {number_to_letter[labels[i]]}")
             plt.axis("off")  # Hide axis
         plt.suptitle("Normalized images")
         # Save the entire grid to a single file
-        plt.savefig("letters_grid_normalized.png")
+        plt.savefig(f"letters_grid_normalized{'_6' if reduced else ''}.png")
 
     # Calculate the standard deviation of the dataset
     std_dev = np.std(normalized_data)
@@ -702,13 +711,13 @@ def normalize_dataset(save_sample: bool = False):
             image_reshaped = image.reshape(28, 28)
 
             # Create a subplot for each image
-            plt.subplot(grid_size, grid_size, idx + 1)
+            plt.subplot(nrows, ncols, idx + 1)
             plt.imshow(image_reshaped, cmap="gray")
             plt.title(f"Letter {number_to_letter[labels[i]]}")
             plt.axis("off")  # Hide axis
         plt.suptitle("Standardized images")
         # Save the entire grid to a single file
-        plt.savefig("letters_grid_standardized.png")
+        plt.savefig(f"letters_grid_standardized{'_6' if reduced else ''}.png")
 
     # Add the label column back
     final_data = np.column_stack((labels, standardized_data))
@@ -743,17 +752,17 @@ def normalize_dataset(save_sample: bool = False):
     print("Added headers")
 
     # Write the data to a new csv file
-    new_file = CSV_DATASET_TRAINING.replace(".csv", "_normalized.csv")
+    new_file = CSV_DATASET_TRAINING.replace(".csv", f"{'_6' if reduced else ''}_normalized.csv")
     final_train_df.to_csv(new_file, index=False)
 
     print("Saved normalized dataset to", new_file)
 
-    new_file = CSV_DATASET_TESTING.replace(".csv", "_normalized.csv")
+    new_file = CSV_DATASET_TESTING.replace(".csv", f"{'_6' if reduced else ''}_normalized.csv")
     final_test_df.to_csv(new_file, index=False)
 
     print("Saved normalized dataset to", new_file)
 
-    new_file = CSV_DATASET_VALIDATION.replace(".csv", "_normalized.csv")
+    new_file = CSV_DATASET_VALIDATION.replace(".csv", f"{'_6' if reduced else ''}_normalized.csv")
     final_val_df.to_csv(new_file, index=False)
 
     print("Saved normalized dataset to", new_file)
@@ -980,19 +989,14 @@ def augment_dataset(dataset: str = IMAGES_DIR):
                 # Load the image
                 img = cv2.imread(os.path.join(subdir, file), cv2.IMREAD_COLOR)
                 new_name = os.path.join(subdir, f"{letter.upper()}{count}.png")
-                # Save the flipped image
-                cv2.imwrite(new_name, cv2.flip(img, 1))
-                count += 1
-                # Save the vertically flipped image
-                new_name = os.path.join(subdir, f"{letter.upper()}{count}.png")
-                cv2.imwrite(new_name, cv2.flip(img, 0))
-                count += 1
                 # Rotate the image with a random angle
-                angles = [random.randint(-90, 90) for _ in range(4)]
+                angles = [random.randint(-5, 5) for _ in range(5)]
                 for angle in angles:
                     new_name = os.path.join(subdir, f"{letter.upper()}{count}.png")
                     img = cv2.imread(os.path.join(subdir, file), cv2.IMREAD_COLOR)
-
+                    # Zoom in the image by 20%
+                    old_size = img.shape[:2]
+                    img = cv2.resize(img, (0, 0), fx=1.2, fy=1.2)
                     # Get the center of the image
                     center = (img.shape[1] // 2, img.shape[0] // 2)
                     # Rotate the image
@@ -1000,7 +1004,11 @@ def augment_dataset(dataset: str = IMAGES_DIR):
                     img = cv2.warpAffine(
                         img, rotation_matrix, (img.shape[1], img.shape[0])
                     )
-
+                    # Crop the image to the original size
+                    img = cv2.getRectSubPix(
+                        img, (old_size[1], old_size[0]), (img.shape[1] // 2, img.shape[0] // 2)
+                    )
+                    # Save the image
                     cv2.imwrite(new_name, img)
                     count += 1
                 # Do a random contrast and brightness change
