@@ -1017,6 +1017,20 @@ def augment_dataset(dataset: str = IMAGES_DIR):
         print(f"New count of files: {count + 1}")
 
 
+def reset_dataset():
+    for subdir, _, files in os.walk("dataset/images"):
+        for file in files:
+            if file.endswith(".png"):
+                # Check the index of the file
+                index = file.split("\\")[-1].split(".")[0][1:]
+                try:
+                    index = int(index)
+                except ValueError:
+                    continue
+                if index > 70:
+                    os.remove(os.path.join(subdir, file))
+                    print(f"Removed {file}")
+
 if __name__ == "__main__":
     # augment_dataset()
     # img_set_dir_to_csv("dataset/images")
