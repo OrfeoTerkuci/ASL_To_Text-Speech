@@ -228,7 +228,7 @@ class StepData:
 class CNN(bm.BaseModel):
     def __init__(self, train_file: str, test_file: str, val_file: str, train: bool = True):
         """
-        Initializes the CNN class.
+        Initializes the CNN class. (Pixel based CNN model)
 
         Args:
             train_file (str): The path to the training file.
