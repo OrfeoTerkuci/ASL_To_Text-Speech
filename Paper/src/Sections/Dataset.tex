@@ -9,14 +9,14 @@
     What data we use to train our model will determine how well our model will perform. 
     There were many things we had to consider when choosing the data. 
 
-    First we looked in to custom data, in case we want to make our own dataset. 
+    First we looked into custom data, in case we want to make our own dataset. 
     Making our own dataset would have been a good idea, 
     as we could have made the dataset as big and diverse as we wanted.
     The model would be closer to our biases and would fit better to our needs, 
     but the one big disadvantage of making our own dataset, is that it would have taken a lot of time to make a proper dataset. 
 
     We tried making our own dataset, and made a small working code that could do this automatically, 
-    but we quickly realized that it would take too much time considering that one letter per person takes 20~30 minutes each. 
+    but we quickly realized that it would take too much time considering that one letter per person takes 20\~30 minutes each. 
 
     We then looked in to different existing datasets, and came across MNIST sign language dataset\cite{d0}. 
     We considered using this dataset, because MNIST is very well known among the machine learning community regarding image classification of letters\cite{o0}.
@@ -38,9 +38,9 @@
         \item We then resize the images to 28$\times$28, as the images are not all the same size.
         \item We then normalize the images, as the pixel values are between 0 and 255 (in our case remapped between 0 and 1).
     \end{itemize} 
-    These are the basic preprocessing steps that are needed, you could add some other preprocessing steps if you want to, like blur, noise, etc.
-    This accounting that we focus the image first to the hand before we resize.
-    We also do some normalization of the data and standardization of the data, as this will help the model to learn better. 
+    These are the basic preprocessing steps that are needed, you could add some other preprocessing steps if you want to add blur or noise, etc.
+    Accounting that we focus the image first to the hand before we resize.
+    We also do some normalization and standardization of the data, as this will help the model to learn better. 
     \includegraphics[width=\linewidth]{letters_grid_normalized_6}
     \includegraphics[width=\linewidth]{letters_grid_standardized_6}
     We also make use of a mean image, this is the average of all the images in the dataset.

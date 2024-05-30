@@ -18,18 +18,18 @@ We fixed this by remapping the classes to the alphabet excluding J and Z.
 \subsubsection{Data creation}
 Why not create our own data? As mentioned before we tried to create our own data, but this was not as easy as we thought.
 One of the problems is that quality of images can have an impact on the model. 
-For instance if the obtained dataset is not in the same quality/format as the webcam we use to test the model, the model will not be able to predict the letters correctly or accuratly.
+For instance if the obtained dataset is not in the same quality/format as the webcam we use to test the model, the model will not be able to predict the letters correctly or accurately.
 Not only that, creation of a dataset or combining datasets can also result in a dataset that is not balanced.
 This means that the model will be biased towards a certain enviroment.
 \subsubsection{Data preprocessing}
-One more issue we had, taht we realised with landmarks, 
+One more issue we had, that we realised with landmarks, 
 is that the data had been cropped too much and would not be recongnized as a hand.
 To solve this issue, we just disabled cropping for landmarking.
 \subsection{Model}
 Making a good model is not easy, and we encountered several issues when creating the model.
 \subsubsection{Overfitting}
 One issue we encountered was that the model was overfitting. 
-The model would quicly overfit causing our model to only remember certain letters, for instance only A for all hand signs.
+The model would quickly overfit causing our model to only remember certain letters, for instance only A for all hand signs.
 Fixing this issue was not easy, as we had to try different things to prevent overfitting.
 \subsubsection{Layers}
 Next issue, deciding the layers and how many layers our model should have is a difficult task.
