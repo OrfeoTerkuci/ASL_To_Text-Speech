@@ -620,11 +620,13 @@ class CnnLandMarks(bm.BaseModel):
         self.conv2 = nn.Conv2d(32, 64, kernel_size=(3, 3), stride=1, padding=1)
         self.act2 = nn.ReLU()
         self.bn2 = nn.BatchNorm2d(64)
+        self.dropout2 = nn.Dropout(0.1)
         self.pool2 = nn.MaxPool2d(kernel_size=(2, 2), stride=2, padding=1)
 
         self.conv3 = nn.Conv2d(64, 128, kernel_size=(3, 3), stride=1, padding=1)
         self.act3 = nn.ReLU()
         self.bn3 = nn.BatchNorm2d(128)
+        self.dropout3 = nn.Dropout(0.1)
         self.pool3 = nn.MaxPool2d(kernel_size=(2, 2), stride=2, padding=1)
 
         self.flatten = nn.Flatten()
@@ -655,8 +657,6 @@ class CnnLandMarks(bm.BaseModel):
         
         self.fc8 = nn.Linear(64, NUM_CLASSES)
 
-        self.soft_max = nn.Softmax(dim=1)
-
     def forward(self, x: Tensor) -> Tensor:
         """
         Performs a forward pass through the CNN model.
@@ -670,53 +670,48 @@ class CnnLandMarks(bm.BaseModel):
         x = self.conv1(x)
         x = self.act1(x)
         x = self.bn1(x)
-        # x = self.dropout1(x)
+        x = self.dropout1(x)
         x = self.pool1(x)
 
         x = self.conv2(x)
         x = self.act2(x)
         x = self.bn2(x)
+        x = self.dropout2(x)
         x = self.pool2(x)
 
         x = self.conv3(x)
         x = self.act3(x)
         x = self.bn3(x)
+        x = self.dropout3(x)
         x = self.pool3(x)
 
         x = self.flatten(x)
 
         x = self.fc4(x)
-        # print(f"fc4: {x.shape}")
         x = self.act4(x)
         # x = self.bn4(x)
 
         x = self.dropout4(x)
         
         x = self.fc5(x)
-        # print(f"fc5: {x.shape}")
         x = self.act5(x)
         # x = self.bn5(x)
         
         x = self.dropout5(x)
         
         x = self.fc6(x)
-        # print(f"fc6: {x.shape}")
         x = self.act6(x)
         # x = self.bn6(x)
         
         x = self.dropout6(x)
         
         x = self.fc7(x)
-        # print(f"fc7: {x.shape}")
         x = self.act7(x)
         # x = self.bn7(x)
         
         x = self.dropout7(x)
         
         x = self.fc8(x)
-        # print(f"fc8: {x.shape}")
-
-        # x = self.soft_max(x)
 
         return x
 
