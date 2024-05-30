@@ -2,5 +2,33 @@
 
 % Document
 \begin{document}
-TODO
+    In this paper we discussed about our process of creating a model that can translate American Sign Language (ASL) to text.
+    We discussed the data we used, the model we created and the results we obtained.
+    We also discussed the challenges we faced and the future work that can be done to improve our model.
+
+    We created two models, one that makes use of pixel values and one that makes use of landmarks.
+    The pixel model didn't perform as well as we hoped, because it makes use of the pixel values, it needs a lot of data to perform well.
+    The model reaches an accuracy of 0.4 during training and stops learning quickly afterwards.
+    We tried to fix this by adding more data, by augmentation, but this didn't help.
+    The landmarks model performed better than the pixel model, as it only needs 21 landmarks to predict the letter.
+    Not only that, the landmarks train based on position, so enviroment doesn't matter.
+    The model during testing reaches an performance of 0.6667, whith a dataset of only 6 letters.
+
+    We also created a GUI that showcases our project. The GUI has a few features that showcase our project. The main features are:
+    \begin{itemize}
+        \item Loading a implemented model (CNN).
+        \item Handtracking using your webcam.
+    \end{itemize}
+    The Handtracking feature uses the MediaPipe and OpenCV library to track the hand and display the landmarks on the screen.
+
+    Hand tracking is one of the most important parts of our project. 
+    This combines the visual image of the hand and the model we created.
+    We make use of OpenCV and MediaPipe to track the hand.
+    We start by capturing the video feed from the camera, and then we use the hand tracking model from MediaPipe to track the hand.
+    OpenCV helps us to process the image before we do anything with it.
+    We also make use of MediaPipe to help us track/calculate the landmarks of the hand.
+
+    In the future we would like to improve our model by training on a bigger dataset.
+    We would also like to improve the GUI by adding more features and improving the hand tracking.
+    We would also like to improve the model by adding more letters to the dataset.
 \end{document}
