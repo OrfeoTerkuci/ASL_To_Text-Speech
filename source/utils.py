@@ -817,8 +817,11 @@ def split_landmarks():
 
                     # Add the label to the data
                     label = file.split("\\")[-1].split("_")[0]
-                    print(f"Processing {label.upper()}")
                     # translate the label to a number
+                    if label.upper() in EXCLUDED_LETTERS:
+                        print(f"Excluded letter: {label}")
+                        continue
+                    print(f"Processing {label.upper()}")
                     label = letter_to_number[label.upper()]
 
                     data = [[label] + row for row in data]
