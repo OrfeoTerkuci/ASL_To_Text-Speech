@@ -5,7 +5,6 @@
 \begin{document}
     The most important part of our project is the model we created.
     Let's discuss how and what we did to create the model.
-
     \subsection{Layers}
     Before we dive in to the model we created, let's first discuss the different layers we used in our model.
 
@@ -51,15 +50,14 @@
     As a consequence, all the layer inputs are normalized, and significant outliers are less likely to impact the training process in a negative way. 
     And if they do, their impact will be much lower than without using Batch Normalization.\cite{o17}
     This is done when the data is not normalized, and the model is not converging well.
-    For instance if the batches are different from each other, causing the weights of the model to shift from eachother, making the training process longer.
-
+    For instance if the batches are different from each other, causing the weights of the model to shift from eachother, making the training process longer. 
     \subsection{Pixel}
     The first method we used to train our model is by using the pixels of the image.
     \subsubsection{Network}
     The model we created is a Convolutional Neural Network (CNN) model.
     We have several layers to form our network. 
     We have 3 convolutional layers, 3 max pooling layers, 4 activation layers, 2 fully connected layers, 2 dropout layers, 1 flatten layer and one softmax.
-    \\\\
+
     The network is structured as follows:\\
     The input shape of our model is (28, 28, 1) and the output shape is the number of classes we have, which is 24 (for the 24 letters of the alphabet excluding j and z).
     We insert the image first through a convolutional layer, this outputs a feature map, with 32 output channels.
@@ -86,15 +84,15 @@
     More on that later.
     We then feed the training data to the model and let it train.
     This training process is done in batches, where the model is fed a batch of data, computes the loss, and updates the weights.
-    During every epoch, we have two passes through the data, one forward pass and one backward pass.
+    During every epoch, we have two passes through the data, one forward pass and one backward pass. 
     \includegraphics[width=\linewidth]{Backpropagation-passes-architecture}
     The purpose of the forward pass is to propagate input data through the network and produce predictions or outputs based on the model's learned parameters (weights and biases).\cite{o13}
     In the backward pass, the flow is reversed so that we start by propagating the error to the output layer until reaching the input layer passing through the hidden layers.\cite{o14}
     After these two passes, we have completed one epoch for training.
-    \\\\
+
     We also have a validation set, which is used to evaluate the model's performance on unseen data.
     Note that in our case, the validation set is a subset of the original training set that we split up in training and validation.
-    \\\\
+
     After these two steps are done, we evaluate the model based on the performances of training and validation.
     The training can be interupted if the model is not improving anymore.
     We do this by using a technique called early stopping.
@@ -119,7 +117,7 @@
     \end{itemize}
     These hyperparameters can be tuned based on how the model is performing after training.
     In case the learning takes to long and the model is not improving, we can increase the learning rate for instance.
-    \\\\ 
+
     Hyperparameters are important because they can have a significant impact on the performance of the model.
     In practice, hyperparameters are usually set based on trial and error, 
     where different values are tested to see which ones produce the best results on a validation set.
