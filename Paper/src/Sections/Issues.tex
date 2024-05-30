@@ -21,6 +21,10 @@ One of the problems is that quality of images can have an impact on the model.
 For instance if the obtained dataset is not in the same quality/format as the webcam we use to test the model, the model will not be able to predict the letters correctly or accuratly.
 Not only that, creation of a dataset or combining datasets can also result in a dataset that is not balanced.
 This means that the model will be biased towards a certain enviroment.
+\subsubsection{Data preprocessing}
+One more issue we had, taht we realised with landmarks, 
+is that the data had been cropped too much and would not be recongnized as a hand.
+To solve this issue, we just disabled cropping for landmarking.
 \subsection{Model}
 Making a good model is not easy, and we encountered several issues when creating the model.
 \subsubsection{Overfitting}
@@ -33,9 +37,8 @@ You have to account for the complexity of the model, the number of classes, the 
 Our model was originally overcomplex and would train longer than needed. 
 At one point it was not complex enough and would not be able to distinguish between the different letters.
 Complexity can also decrease the training time, if the layers are chosen correctly.
-SO, overall choosing the right layers and the right number of layers is a difficult task.
-\\\\
-TODO
+So, overall choosing the right layers and the right number of layers is a difficult task.
+Another issue that can occur with complex models, is that the model would stop too early and not learn anything.
 \subsection{Training}
 Training the model was also a difficult task.
 \subsubsection{Hyperparameters}
