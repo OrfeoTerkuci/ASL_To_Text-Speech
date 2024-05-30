@@ -25,8 +25,9 @@ from torchvision.transforms import ToTensor
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from image_rendering.image_recognition import MpSettings
+from image_rendering.image_processing import MpSettings
 from models import basemodel as bm
+from utils import adjust_min_max, coords_calc
 
 # Hyperparameters
 BATCH_SIZE = 8
@@ -108,7 +109,7 @@ class Trainer:
             print("CUDA available. Training on GPU.")
         else:
             print("CUDA not available. Training on CPU.")
-        
+
         print("Model: ", self.model, "with id: ", self.id)
 
         for epoch in range(EPOCHS):
@@ -226,7 +227,9 @@ class StepData:
 
 
 class CNN(bm.BaseModel):
-    def __init__(self, train_file: str, test_file: str, val_file: str, train: bool = True):
+    def __init__(
+        self, train_file: str, test_file: str, val_file: str, train: bool = True
+    ):
         """
         Initializes the CNN class. (Pixel based CNN model)
 
@@ -241,7 +244,7 @@ class CNN(bm.BaseModel):
         self.conv1 = nn.Conv2d(IN_CHANNELS, 32, kernel_size=(3, 3), stride=1, padding=1)
         self.act1 = nn.ReLU()
         self.bn1 = nn.BatchNorm2d(32)
-        
+
         self.pool1 = nn.MaxPool2d(kernel_size=(2, 2), stride=2)  # 14x14
 
         self.conv2 = nn.Conv2d(32, 64, kernel_size=(3, 3), stride=1, padding=1)
@@ -323,7 +326,7 @@ class CNN(bm.BaseModel):
         # x = self.bn4(x)
         # x = self.act4(x)
         # x = self.dropout4(x)
-        
+
         # x = self.fc5(x)
         # x = self.bn5(x)
         # x = self.act5(x)
@@ -332,8 +335,7 @@ class CNN(bm.BaseModel):
         x = self.act6(x)
         x = self.bn6(x)
         x = self.dropout(x)
-        
-        
+
         x = self.fc7(x)
         x = self.act7(x)
         x = self.bn7(x)
@@ -447,9 +449,15 @@ class CNN(bm.BaseModel):
         """
         Trains the CNN model.
         """
-        train_loader = DataLoader(self.train_data, batch_size=BATCH_SIZE, shuffle=True, drop_last=True)
-        val_loader = DataLoader(self.val_data, batch_size=BATCH_SIZE, shuffle=True, drop_last=True)
-        test_loader = DataLoader(self.test_data, batch_size=BATCH_SIZE, shuffle=True, drop_last=True)
+        train_loader = DataLoader(
+            self.train_data, batch_size=BATCH_SIZE, shuffle=True, drop_last=True
+        )
+        val_loader = DataLoader(
+            self.val_data, batch_size=BATCH_SIZE, shuffle=True, drop_last=True
+        )
+        test_loader = DataLoader(
+            self.test_data, batch_size=BATCH_SIZE, shuffle=True, drop_last=True
+        )
 
         trainer = Trainer(
             self,
@@ -468,6 +476,17 @@ class CNN(bm.BaseModel):
 
         :return: ndarray with the predicted values.
         """
+        mp_settings = MpSettings(static=True)
+        # Detect the landmarks
+        result = mp_settings.hands.process(x)
+        if not result:
+            return np.zeros(24)
+        if not result.multi_hand_landmarks:
+            return np.zeros(24)
+        landmarks = result.multi_hand_landmarks[0]
+
+        # Crop to the landmarks
+
         np_data = x
 
         # Convert to bgr from rgb
@@ -566,7 +585,9 @@ class CNN(bm.BaseModel):
         if torch.cuda.is_available():
             self.load_state_dict(torch.load(path), strict=False)
         else:
-            self.load_state_dict(torch.load(path, map_location=torch.device('cpu')), strict=False)
+            self.load_state_dict(
+                torch.load(path, map_location=torch.device("cpu")), strict=False
+            )
         self.eval()
 
     def __str__(self) -> str:
@@ -600,7 +621,9 @@ class CNN(bm.BaseModel):
 class CnnLandMarks(bm.BaseModel):
     """Cnn model for landmarks detection."""
 
-    def __init__(self, train_file: str, test_file: str, val_file: str, train: bool = True):
+    def __init__(
+        self, train_file: str, test_file: str, val_file: str, train: bool = True
+    ):
         """
         Initializes the CNN class.
 
@@ -614,48 +637,43 @@ class CnnLandMarks(bm.BaseModel):
         self.conv1 = nn.Conv2d(IN_CHANNELS, 32, kernel_size=(3, 3), stride=1, padding=1)
         self.act1 = nn.ReLU()
         self.bn1 = nn.BatchNorm2d(32)
-        self.dropout1 = nn.Dropout(0.1)
-        self.pool1 = nn.MaxPool2d(kernel_size=(2, 2), stride=2, padding=1)
+        self.pool1 = nn.MaxPool2d(kernel_size=(2, 2), stride=2, padding=1)  # 14x14
 
         self.conv2 = nn.Conv2d(32, 64, kernel_size=(3, 3), stride=1, padding=1)
         self.act2 = nn.ReLU()
         self.bn2 = nn.BatchNorm2d(64)
-        self.dropout2 = nn.Dropout(0.1)
-        self.pool2 = nn.MaxPool2d(kernel_size=(2, 2), stride=2, padding=1)
+        self.pool2 = nn.MaxPool2d(kernel_size=(2, 2), stride=2, padding=1)  # 7x7
 
-        self.conv3 = nn.Conv2d(64, 128, kernel_size=(3, 3), stride=1, padding=1)
-        self.act3 = nn.ReLU()
-        self.bn3 = nn.BatchNorm2d(128)
-        self.dropout3 = nn.Dropout(0.1)
-        self.pool3 = nn.MaxPool2d(kernel_size=(2, 2), stride=2, padding=1)
-
+        # self.conv3 = nn.Conv2d(64, 128, kernel_size=(3, 3), stride=1, padding=1)
+        # self.act3 = nn.ReLU()
+        # self.bn3 = nn.BatchNorm2d(128)
+        # self.dropout3 = nn.Dropout(0.1)
+        # self.pool3 = nn.MaxPool2d(kernel_size=(2, 2), stride=2, padding=1)
+        self.dropout1 = nn.Dropout(0.1)
+        self.dropout2 = nn.Dropout(0.2)
         self.flatten = nn.Flatten()
 
-        self.fc4 = nn.Linear(1024, 512)
+        self.fc4 = nn.Linear(768, 256)
         self.act4 = nn.ReLU()
-        self.bn4 = nn.BatchNorm1d(512)
-        
-        self.dropout4 = nn.Dropout(0.2)
-    
-        self.fc5 = nn.Linear(512, 256)
-        self.act5 = nn.ReLU()
-        self.bn5 = nn.BatchNorm1d(256)
-        
-        self.dropout5 = nn.Dropout(0.2)
-        
+        self.bn4 = nn.BatchNorm1d(256)
+
+        # self.dropout4 = nn.Dropout(0.2)
+
+        # self.fc5 = nn.Linear(512, 256)
+        # self.act5 = nn.ReLU()
+        # self.bn5 = nn.BatchNorm1d(256)
+
         self.fc6 = nn.Linear(256, 128)
         self.act6 = nn.ReLU()
         self.bn6 = nn.BatchNorm1d(128)
-        
-        self.dropout6 = nn.Dropout(0.2)
-        
+
         self.fc7 = nn.Linear(128, 64)
         self.act7 = nn.ReLU()
         self.bn7 = nn.BatchNorm1d(64)
-        
-        self.dropout7 = nn.Dropout(0.2)
-        
+
         self.fc8 = nn.Linear(64, NUM_CLASSES)
+
+        self.soft_max = nn.Softmax(dim=1)
 
     def forward(self, x: Tensor) -> Tensor:
         """
@@ -676,14 +694,14 @@ class CnnLandMarks(bm.BaseModel):
         x = self.conv2(x)
         x = self.act2(x)
         x = self.bn2(x)
-        x = self.dropout2(x)
+        x = self.dropout1(x)
         x = self.pool2(x)
 
-        x = self.conv3(x)
-        x = self.act3(x)
-        x = self.bn3(x)
-        x = self.dropout3(x)
-        x = self.pool3(x)
+        # x = self.conv3(x)
+        # x = self.act3(x)
+        # x = self.bn3(x)
+        # x = self.dropout3(x)
+        # x = self.pool3(x)
 
         x = self.flatten(x)
 
@@ -691,27 +709,29 @@ class CnnLandMarks(bm.BaseModel):
         x = self.act4(x)
         # x = self.bn4(x)
 
-        x = self.dropout4(x)
-        
-        x = self.fc5(x)
-        x = self.act5(x)
+        # x = self.dropout2(x)
+
+        # x = self.fc5(x)
+        # x = self.act5(x)
         # x = self.bn5(x)
-        
-        x = self.dropout5(x)
-        
+
+        x = self.dropout2(x)
+
         x = self.fc6(x)
         x = self.act6(x)
         # x = self.bn6(x)
-        
-        x = self.dropout6(x)
-        
+
+        x = self.dropout2(x)
+
         x = self.fc7(x)
         x = self.act7(x)
         # x = self.bn7(x)
-        
-        x = self.dropout7(x)
-        
+
+        x = self.dropout2(x)
+
         x = self.fc8(x)
+
+        x = self.soft_max(x)
 
         return x
 
@@ -839,20 +859,48 @@ class CnnLandMarks(bm.BaseModel):
 
         :return: ndarray with the predicted values.
         """
-        mp_settings = MpSettings(static=True)
+        mp_settings = MpSettings()
         # Detect the landmarks
         result = mp_settings.hands.process(x)
+        id = random.randint(0, 100000)  # Random ID for tensorboard
+        cv2.imwrite(f"test_{id}.jpg", x)
 
         if not result:
+            print("No result")
             return np.zeros(24)
         if not result.multi_hand_landmarks:
+            print("No landmarks detected")
             return np.zeros(24)
         landmarks = result.multi_hand_landmarks[0]
+
+        # Reconstruct the image
+        img = cv2.imread(f"test_{id}.jpg")
+        print(img.shape)
+        lm_list = []
+        x_min, y_min = img.shape[1], img.shape[0]
+        x_max, y_max = 0, 0
+
+        # Crop to the landmarks
+        for lm in landmarks.landmark:
+            x_max, x_min, y_max, y_min, cx, cy = coords_calc(
+                0, img, lm, lm_list, x_max, x_min, y_max, y_min
+            )
+            print(x_max, x_min, y_max, y_min)
+            x_max, x_min, y_max, y_min = adjust_min_max(
+                0, img, x_max, x_min, y_max, y_min
+            )
+
+        img = img[x_min:x_max, y_min:y_max]
+        print(img.shape)
+        print(x_max, x_min, y_max, y_min)
+        # Save the image
+        cv2.imwrite(f"test2_{id}.jpg", img)
+
         landmarks = np.array(
-            [[landmark.x, landmark.y, landmark.z] for landmark in landmarks.landmark]
+            [[landmark.x, landmark.y] for landmark in landmarks.landmark]
         ).flatten()
 
-        landmarks = landmarks.reshape(1, 21, 3)
+        landmarks = landmarks.reshape(1, 21, 2)
         # Convert to tensor
         np_data = torch.tensor(landmarks, dtype=torch.float32).unsqueeze(0)
 
