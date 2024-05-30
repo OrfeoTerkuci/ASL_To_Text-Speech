@@ -271,7 +271,7 @@ class CNN(bm.BaseModel):
         # self.bn5 = nn.BatchNorm1d(256)
         # self.act5 = nn.ReLU()
 
-        self.fc6 = nn.Linear(256, 128)
+        self.fc6 = nn.Linear(64 * 7 * 7, 128)
         self.bn6 = nn.BatchNorm1d(128)
         self.act6 = nn.ReLU()
 
@@ -305,17 +305,17 @@ class CNN(bm.BaseModel):
         x = self.dropout(x)
         x = self.pool2(x)
 
-        x = self.conv3(x)
-        x = self.act3(x)
-        x = self.bn3(x)
-        x = self.dropout(x)
-        x = self.pool3(x)
+        # x = self.conv3(x)
+        # x = self.act3(x)
+        # x = self.bn3(x)
+        # x = self.dropout(x)
+        # x = self.pool3(x)
 
-        x = self.conv4(x)
-        x = self.act4(x)
-        x = self.bn4(x)
-        x = self.dropout(x)
-        x = self.pool4(x)
+        # x = self.conv4(x)
+        # x = self.act4(x)
+        # x = self.bn4(x)
+        # x = self.dropout(x)
+        # x = self.pool4(x)
 
         x = self.flatten(x)
 
