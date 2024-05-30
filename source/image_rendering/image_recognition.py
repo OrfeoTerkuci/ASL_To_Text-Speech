@@ -348,10 +348,6 @@ class WebcamHandtracking:  # pylint: disable=R0902
         # Only analyze if a hand is detected
         if self.extreme_points:
             # Convert the frame to grayscale and crop it to the hand
-            analysis_frame = analysis_frame[
-                self.extreme_points[3] : self.extreme_points[2],
-                self.extreme_points[1] : self.extreme_points[0],
-            ]
             pixel_data = np.array(analysis_frame)
             # Run the prediction on the model
             predict_thread = threading.Thread(
@@ -410,18 +406,12 @@ class WebcamHandtracking:  # pylint: disable=R0902
         :param save_images: bool
         """
         self.start_webcam()
-        frame_no = 0
-        track = True  # placeholder for now
         while True:
             threads: list[threading.Thread] = []
             frame = self.get_frame()
             frame = cv2.flip(frame, 1)
 
-            if track:
-                frame = self.track(frame, frame_no, threads)
-                frame_no += 1
-
-            cv2.imshow("frame", frame)
+            self.track(frame, threads)
 
             for thr in threads:
                 thr.join()
@@ -436,9 +426,8 @@ class WebcamHandtracking:  # pylint: disable=R0902
     def track(  # pylint: disable=R0913, R0914
         self,
         frame: Any,
-        frame_no: int,
         threads: list[threading.Thread],
-    ) -> Any:
+    ) -> None:
         """
         Track the hand and save the position
         :param colors: The colors to use
@@ -457,9 +446,7 @@ class WebcamHandtracking:  # pylint: disable=R0902
             thr2 = threading.Thread(target=self.find_position, args=(frame, threads, i))
             thr2.start()
             threads.append(thr2)
-            frame_no += 1
-        self.draw_frame(frame)
-        return frame
+        self.draw_frame(copy.deepcopy(frame))
 
     def draw_frame(self, frame: Any) -> None:
         """
@@ -488,6 +475,7 @@ class WebcamHandtracking:  # pylint: disable=R0902
                 cv2.circle(frame, (cx, cy), 10, (255, 0, 255), cv2.FILLED)
             x_max, x_min, y_max, y_min = self.extreme_points
             cv2.rectangle(frame, (x_min, y_min), (x_max, y_max), (0, 255, 0), 2)
+        
         count = self.get_hand_count()
         # Display the position of the hand on the frame
         if lm_list := self.get_lm_list():
@@ -528,3 +516,4 @@ class WebcamHandtracking:  # pylint: disable=R0902
             (255, 255, 255),
             3,
         )
+        cv2.imshow("frame", frame)
