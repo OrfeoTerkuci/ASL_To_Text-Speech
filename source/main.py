@@ -5,6 +5,7 @@ Run for the whole project.
 
 from image_rendering.image_recognition import WebcamHandtracking
 from image_rendering.image_processing import ImageProcessor
+from gui.gui import App
 
 from models.cnn.cnn import (
     BATCH_SIZE,
@@ -66,6 +67,9 @@ def process_images_for_landmarks_indi() -> None:
     ip.process_images_to_csv_individually("./dataset/images/")
 
 if __name__ == "__main__":
-    train_cnn(landmarks=False, reduced=True)
+    # train_cnn(landmarks=False, reduced=True)
     # test_cnn(id=18225, landmarks=False, reduced=True)
     # process_images_for_landmarks_indi()
+    
+    app = App()
+    app.mainloop()
