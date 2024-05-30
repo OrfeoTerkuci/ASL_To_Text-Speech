@@ -1016,7 +1016,7 @@ def augment_dataset(dataset: str = IMAGES_DIR):
                     new_name = os.path.join(subdir, f"{letter.upper()}{count}.png")
                     img = cv2.imread(os.path.join(subdir, file), cv2.IMREAD_COLOR)
                     contrast = random.uniform(0.5, 1.5)
-                    brightness = random.randint(-50, 50)
+                    brightness = random.randint(-10, 10)
                     img = cv2.addWeighted(
                         img, contrast, np.zeros(img.shape, img.dtype), 0, brightness
                     )

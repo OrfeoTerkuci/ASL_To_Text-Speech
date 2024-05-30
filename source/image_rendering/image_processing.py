@@ -314,18 +314,24 @@ class ImageProcessor:
         if results.multi_hand_landmarks:
             # Create a list to store the landmarks
             landmarks = []
-            # Loop through the detected hands
-            for hand_landmarks in results.multi_hand_landmarks:
-                # Loop through the landmarks
-                for landmark in hand_landmarks.landmark:
-                    # Get the x, y, and z coordinates of the landmark
-                    x = landmark.x
-                    y = landmark.y
-                    z = landmark.z
-                    # Append the coordinates to the list
-                    landmarks.append([x, y, z])
+            if len(results.multi_hand_landmarks) > 1:
+                print(f"More than one hand detected for image {input_location}")
+                return pd.DataFrame([[]])
+            hand_landmarks = results.multi_hand_landmarks[0]
+            # Loop through the landmarks
+            for landmark in hand_landmarks.landmark:
+                # Get the x, y, and z coordinates of the landmark
+                x = landmark.x
+                y = landmark.y
+                # Append the coordinates to the list
+                landmarks.append([x, y])
             # Convert the landmarks to a DataFrame
-            landmarks_df = pd.DataFrame([landmarks], columns=[f"landmark_{i}" for i in range(21)])
+            try:
+                landmarks_df = pd.DataFrame([landmarks], columns=[f"landmark_{i}" for i in range(21)])
+            except ValueError as e:
+                print(landmarks)
+                print(len(landmarks))
+                raise e
             return landmarks_df
         else:
             # Return an empty DataFrame if no hand is detected
@@ -381,6 +387,49 @@ class ImageProcessor:
                             if not landmarks_df.empty:
                                 row = [landmarks_df.iloc[0][f"landmark_{i}"] for i in range(21)]
                                 csv_writer.writerow(row)
+
+
+    def crop_to_landmarks(self, input_location: str, output_location: str) -> None:
+        """
+        This method crops the images to the part where the hands are detected.
+        :param input_location: The location of the input folder.
+        :param output_location: The location of the output folder.
+        """
+        for dir_name in os.listdir(input_location):
+            dir_path = os.path.join(input_location, dir_name)
+            if os.path.isdir(dir_path):
+                for file in os.listdir(dir_path):
+                    if file.endswith(".png"):
+                        print("Cropping image: " + file)
+                        self.load_image(os.path.join(dir_path, file))
+                        self.detect_hands()
+                        if not self.results:
+                            print(f"No hands detected for image {file}")
+                            continue
+                        if not self.results.multi_hand_landmarks:
+                            print(f"No hands detected for image {file}")
+                            continue
+                        self.crop_to_hands()
+                        # self.resize_standard()
+                        self.save_image(os.path.join(dir_path, file))
+
+
+    def resize_images(self, input_location: str) -> None:
+        """
+        This method resizes the images to a specific size.
+        :param input_location: The location of the input folder.
+        """
+        for dir_name in os.listdir(input_location):
+            dir_path = os.path.join(input_location, dir_name)
+            if os.path.isdir(dir_path):
+                for file in os.listdir(dir_path):
+                    if file.endswith(".png"):
+                        print("Resizing image: " + file)
+                        self.load_image(os.path.join(dir_path, file))
+                        self.resize_standard()
+                        self.save_image(os.path.join(dir_path, file))
+
+
 
 def clear_preprocess_output(output_location: str) -> None:
     """
