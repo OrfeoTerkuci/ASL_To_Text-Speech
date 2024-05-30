@@ -547,9 +547,12 @@ def reduce_landmarks_dataset(new_size: int):
     # numbers = random.sample(range(24), new_size)
     numbers = range(new_size)
 
-    landmark_df = pd.read_csv(
-        f"{LANDMARKS_DIR}/landmarks_dataset/landmarks_dataset.csv"
-    )
+    train_df = pd.read_csv(f"{LANDMARKS_DIR}/train/landmarks_train.csv")
+    test_df = pd.read_csv(f"{LANDMARKS_DIR}/test/landmarks_test.csv")
+    validation_df = pd.read_csv(f"{LANDMARKS_DIR}/validation/landmarks_validation.csv")
+    
+    landmark_df = pd.concat([train_df, test_df, validation_df], ignore_index=True)
+    
     reduced_data = landmark_df[landmark_df["label"].isin(numbers)].values.tolist()
     print("Reducing dataset")
     print(f"Reduced data: {len(reduced_data)}")
