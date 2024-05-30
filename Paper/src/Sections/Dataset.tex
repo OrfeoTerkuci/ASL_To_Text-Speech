@@ -1,4 +1,5 @@
 \documentclass[../paper.tex]{subfiles}
+\graphicspath{ {../images/} }
 
 % Document
 \begin{document}
@@ -22,6 +23,8 @@
     We considered using this dataset, because MNIST is very well known among the machine learning community regarding image classification of letters\cite{o0}.
     The dataset consists of 28$\times$28 images of the American Sign Language alphabet, 
     and has 24 different classes. 
+    Some examples listed below:
+    \includegraphics[width=\linewidth]{letters_grid_6}
     Letter J and Z are not included in the dataset, as they require motion.\\
     \\
     One problem we later faced is that the dataset was not as big as we wanted it to be,
@@ -39,9 +42,16 @@
     \end{itemize}
     These are the basic preprocessing steps that are needed, you could add some other preprocessing steps if you want to, like blur, noise, etc.
     This accounting that we focus the image first to the hand before we resize.
+    We also do some normalization of the data and standardization of the data, as this will help the model to learn better.
+    \includegraphics[width=\linewidth]{letters_grid_normalized_6}
+    \includegraphics[width=\linewidth]{letters_grid_standardized_6}
+    We also make use of a mean image, this is the average of all the images in the dataset.
+    We use this image to substract from the images, this will help the model to only focus on the important parts of the image.
+    \includegraphics[width=\linewidth]{mean_image_6}
     \\\\
     This is the preprocessing for the first method, the second method is a bit different, as we need to track the landmarks of the hand first.
-    Every hand has a certain amount of landmarks, each landmark signifies a certain point on the hand.
+    Every hand has 21 landmarks, each landmark signifies a certain point on the hand.
+    \includegraphics[width=\linewidth]{hand_landmarks}
     Each landmark has a certain x, y and z coordinate, where x is the width, y is the height and z is the depth.
 
     \subsubsection{Data formats}
@@ -54,5 +64,10 @@
     \subsection{Data Augmentation}
     Data augmentation is a technique used to increase the size of the dataset by adding slightly modified copies of the data.
     Note that this could cause problems if not done correctly, the augmentation should still represent realisitic data.
-    
+
+    \subsection{Data distribution}
+    We distribute our dataset in a 60\% training set, 30\% validation set and 10\% test set.
+    This causes our dataset to be smaller than we would have liked.
+    \includegraphics[width=\linewidth]{dataset_distribution}
+
     \end{document}
