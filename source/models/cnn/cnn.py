@@ -933,7 +933,12 @@ class CnnLandMarks(bm.BaseModel):
         Returns:
             CNN: The loaded CNN model.
         """
-        self.load_state_dict(torch.load(path))
+        if torch.cuda.is_available():
+            self.load_state_dict(torch.load(path), strict=False)
+        else:
+            self.load_state_dict(
+                torch.load(path, map_location=torch.device("cpu")), strict=False
+            )
         self.eval()
 
     def __str__(self) -> str:
