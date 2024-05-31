@@ -280,7 +280,7 @@ class WebcamHandtracking:  # pylint: disable=R0902
             self.extreme_points = (x_max, x_min, y_max, y_min)
 
             # Only predict once per second
-            if time.time() - self.last_analyze_time > 1:
+            if time.time() - self.last_analyze_time > 0.25:
                 the3 = threading.Thread(
                     target=self.analyze_and_predict, args=(frame, self.model, threads)
                 )
@@ -347,6 +347,11 @@ class WebcamHandtracking:  # pylint: disable=R0902
         analysis_frame = frame
         # Only analyze if a hand is detected
         if self.extreme_points:
+            analysis_frame = analysis_frame[
+                self.extreme_points[3] : self.extreme_points[2],
+                self.extreme_points[1] : self.extreme_points[0],
+            ]
+
             # Convert the frame to grayscale and crop it to the hand
             pixel_data = np.array(analysis_frame)
             # Run the prediction on the model
