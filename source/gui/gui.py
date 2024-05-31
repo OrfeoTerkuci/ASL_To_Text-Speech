@@ -12,7 +12,7 @@ src_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.append(src_dir)
 
 from image_rendering.image_recognition import WebcamHandtracking
-from models.cnn.cnn import CNN
+from models.cnn.cnn import CNN, CnnLandMarks
 
 ctk.set_appearance_mode("System")  # Modes: "System" (standard), "Dark", "Light"
 ctk.set_default_color_theme("blue")  # Themes: "blue" (standard), "green", "dark-blue"
@@ -81,8 +81,8 @@ class App(ctk.CTk):
             self.CNN_model.configure(text="✔ Loaded CNN Model")
             self.VIT_model.configure(text="VIT Model")
             # TODO: Implement Logic for changing to CNN model
-            self.current_model = CNN("","","", False)
-            self.current_model.load("./models/best_models/cnn_1e-07_32_1000_0.004_2_6.pth")
+            self.current_model = CnnLandMarks("","","", False)
+            self.current_model.load("./models/cnn/cnn_1e-07_8_100000_0.004_4_6_22055_landmarks.pth")
         elif Button_name == "VIT Model":
             # self.VIT_model.configure(text="✔ Loaded VIT Model")
             self.CNN_model.configure(text="CNN Model")
