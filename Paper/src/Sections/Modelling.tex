@@ -8,7 +8,12 @@
     \subsection{Layers}
     Before we dive in to the model we created, let's first discuss the different layers we used in our model.
 
-    \includegraphics[width=\linewidth]{network}
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=\linewidth]{network}
+        \caption{Network}
+        \label{fig:network}
+    \end{figure}
 
     \subsubsection{Convolutional layers}
     This is the most important layer in a standard CNN model.
@@ -85,7 +90,12 @@
     We then feed the training data to the model and let it train.
     This training process is done in batches, where the model is fed a batch of data, computes the loss, and updates the weights.
     During every epoch, we have two passes through the data, one forward pass and one backward pass. 
-    \includegraphics[width=\linewidth]{Backpropagation-passes-architecture}
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=\linewidth]{Backpropagation-passes-architecture}
+        \caption{Forward and backward pass}
+        \label{fig:forward_backward_pass}
+    \end{figure}
     The purpose of the forward pass is to propagate input data through the network and produce predictions or outputs based on the model's learned parameters (weights and biases).\cite{o13}
     In the backward pass, the flow is reversed so that we start by propagating the error to the output layer until reaching the input layer passing through the hidden layers.\cite{o14}
     After these two passes, we have completed one epoch for training.
