@@ -31,7 +31,7 @@ from utils import adjust_min_max, coords_calc
 
 # Hyperparameters
 BATCH_SIZE = 8
-LEARNING_RATE = 5e-09   
+LEARNING_RATE = 1e-07
 EPOCHS = 100000
 MIN_DELTA = 0.004
 PATIENCE = 4
@@ -476,17 +476,6 @@ class CNN(bm.BaseModel):
 
         :return: ndarray with the predicted values.
         """
-        mp_settings = MpSettings(static=True)
-        # Detect the landmarks
-        result = mp_settings.hands.process(x)
-        if not result:
-            return np.zeros(24)
-        if not result.multi_hand_landmarks:
-            return np.zeros(24)
-        landmarks = result.multi_hand_landmarks[0]
-
-        # Crop to the landmarks
-
         np_data = x
 
         # Convert to bgr from rgb
@@ -862,8 +851,6 @@ class CnnLandMarks(bm.BaseModel):
         mp_settings = MpSettings()
         # Detect the landmarks
         result = mp_settings.hands.process(x)
-        id = random.randint(0, 100000)  # Random ID for tensorboard
-        cv2.imwrite(f"test_{id}.jpg", x)
 
         if not result:
             print("No result")
@@ -872,29 +859,6 @@ class CnnLandMarks(bm.BaseModel):
             print("No landmarks detected")
             return np.zeros(24)
         landmarks = result.multi_hand_landmarks[0]
-
-        # Reconstruct the image
-        img = cv2.imread(f"test_{id}.jpg")
-        print(img.shape)
-        lm_list = []
-        x_min, y_min = img.shape[1], img.shape[0]
-        x_max, y_max = 0, 0
-
-        # Crop to the landmarks
-        for lm in landmarks.landmark:
-            x_max, x_min, y_max, y_min, cx, cy = coords_calc(
-                0, img, lm, lm_list, x_max, x_min, y_max, y_min
-            )
-            print(x_max, x_min, y_max, y_min)
-            x_max, x_min, y_max, y_min = adjust_min_max(
-                0, img, x_max, x_min, y_max, y_min
-            )
-
-        img = img[x_min:x_max, y_min:y_max]
-        print(img.shape)
-        print(x_max, x_min, y_max, y_min)
-        # Save the image
-        cv2.imwrite(f"test2_{id}.jpg", img)
 
         landmarks = np.array(
             [[landmark.x, landmark.y] for landmark in landmarks.landmark]
