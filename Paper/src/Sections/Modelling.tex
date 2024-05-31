@@ -7,14 +7,12 @@
     Let's discuss how and what we did to create the model.
     \subsection{Layers}
     Before we dive in to the model we created, let's first discuss the different layers we used in our model.
-
     \begin{figure}[h]
         \centering
         \includegraphics[width=\linewidth]{network}
         \caption{Network}
         \label{fig:network}
     \end{figure}
-
     \subsubsection{Convolutional layers}
     This is the most important layer in a standard CNN model.
     The purpose of a convolutional layer in a Convolutional Neural Network (CNN) is to extract features from the input data. 
@@ -58,30 +56,14 @@
     For instance if the batches are different from each other, causing the weights of the model to shift from eachother, making the training process longer. 
     \subsection{Pixel}
     The first method we used to train our model is by using the pixels of the image.
-    \subsubsection{Network}
-    The model we created is a Convolutional Neural Network (CNN) model.
-    We have several layers to form our network. 
-    We have 3 convolutional layers, 3 max pooling layers, 4 activation layers, 2 fully connected layers, 2 dropout layers, 1 flatten layer and one softmax.
-
-    The network is structured as follows:\\
-    The input shape of our model is (28, 28, 1) and the output shape is the number of classes we have, which is 24 (for the 24 letters of the alphabet excluding j and z).
-    We insert the image first through a convolutional layer, this outputs a feature map, with 32 output channels.
-    We then apply an activation layer to introduce some non-linearity.
-    After that we apply some dropout to prevent overfitting (or at least try).
-    We then apply a max pooling layer to reduce the spatial dimensions of the input volume. This reduces the size of the feature maps to 14$\times$14.
-    We then repeat the process two more times with the next convolutional layer, activation layer, dropout layer and max pooling layer.
-    In the end, we have a 128$\times$3$\times$3 feature map. We then flatten this feature map to a 1152$\times$1 vector.
-    We then apply a fully connected layer to this vector, then another fully connected layer, with some additional layers in between.
-    Finally, we apply a softmax layer to get the probabilities of each class.
-    TODO NEEDS TO CHANGE
-    
+    Every image is made up of pixels, and these pixels have values. 
+    Like earlier discussed, this value is between 0 and 255, we normalize this by ranging it between 0 and 1.
+    The data is then fed to the model, which learns the patterns in the data.
     \subsection{Landmarks}
     The second method we used to train our model is by using the landmarks of the hand.
-    \subsubsection{Network}
-    Again, we make use of a CNN model.
-    The network is structured as follows:\\
-    TODO
-
+    Every hand has 21 landmarks, each landmark signifies a certain point on the hand.
+    This is based on x and y coordinates, where x is the width and y is the height.
+    Instead learning what the image looks like, it will now train based on where the hand is.
     \subsection{Training and Validation}
     Next, we will discuss how we trained our model.
     Training is similar to the training of any other model.
