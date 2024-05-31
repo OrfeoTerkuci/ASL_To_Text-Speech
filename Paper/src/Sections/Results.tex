@@ -18,8 +18,22 @@
     The model during testing reaches an performance of 0.6667, whith a dataset of only 6 letters.
     \subsection{Graphs}
     We made a few graphs to show the performance of the models.
-    \subsubsection{Pixel}
-    TODO
-    \subsubsection{Landmarks}
-    TODO
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=\linewidth]{best_models}
+        \caption{pixel vs landmarks}
+        \label{fig:pixel_vs_landmarks}
+    \end{figure}
+    We can see how the training evolves over time. 
+    The green line represents the pixel model, while the blue line represents the landmarks model.
+
+    We can also look at the evolution of all models that we trained.
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=\linewidth]{accuracy_graph_all}
+        \caption{accuracy graph for all models}
+        \label{fig:all_models}
+    \end{figure}
+    As you can see the figure \ref{fig:all_models}, we had struggles with many models, and eventually only one model out of many performed well.
+
 \end{document}
