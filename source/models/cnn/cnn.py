@@ -686,35 +686,20 @@ class CnnLandMarks(bm.BaseModel):
         x = self.dropout1(x)
         x = self.pool2(x)
 
-        # x = self.conv3(x)
-        # x = self.act3(x)
-        # x = self.bn3(x)
-        # x = self.dropout3(x)
-        # x = self.pool3(x)
-
         x = self.flatten(x)
 
         x = self.fc4(x)
         x = self.act4(x)
-        # x = self.bn4(x)
-
-        # x = self.dropout2(x)
-
-        # x = self.fc5(x)
-        # x = self.act5(x)
-        # x = self.bn5(x)
 
         x = self.dropout2(x)
 
         x = self.fc6(x)
         x = self.act6(x)
-        # x = self.bn6(x)
 
         x = self.dropout2(x)
 
         x = self.fc7(x)
         x = self.act7(x)
-        # x = self.bn7(x)
 
         x = self.dropout2(x)
 
